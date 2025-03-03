@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  shiny-app:
+    build: .
+    ports:
+      - "3838:3838"
+    environment:
+      - RDS_HOST=your_database_endpoint
+      - RDS_PORT=3306
+      - RDS_DBNAME=shiny_random_data
+      - RDS_USERNAME=admin
+      - RDS_PASSWORD=db_password
+      - AWS_ACCESS_KEY=your AWS_ACCESS_KEY
+      - AWS_SECRET_KEY=your AWS_SECRET_KEY
+      - AWS_REGION=eu-north-1
+      - S3_BUCKET=sirpi-shear-test
+    restart: always
