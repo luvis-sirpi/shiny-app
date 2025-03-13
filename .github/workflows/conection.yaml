@@ -1,0 +1,25 @@
+name: Test Server Connectivity
+
+on:
+  workflow_dispatch:  # This allows manual triggering of the workflow
+
+jobs:
+  test-connection:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
+    
+    - name: Ping test
+      run: |
+        echo "Testing ping to server..."
+        ping -c 4 209.182.233.200 || echo "Ping failed but continuing..."
+    
+    - name: SSH connectivity test
+      env:
+        SERVER_USER: luvis
+        SERVER_PASS: pass
+        SERVER_IP: 209.182.233.200
+      run: |
+        echo "Testing SSH connection..."
+        sshpass -p "$SERVER_PASS" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=30 $SERVER_USER@$SERVER_IP "echo Connection successful; hostname; date" && echo "CONNECTION SUCCESSFUL! ✅" || echo "CONNECTION FAILED! ❌"
