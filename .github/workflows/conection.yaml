@@ -18,7 +18,7 @@ jobs:
     - name: SSH connectivity test
       env:
         SERVER_USER: luvis
-        SERVER_PASS: pass
+        SERVER_PASS: TSMC2029
         SERVER_IP: 209.182.233.200
       run: |
         echo "Testing SSH connection..."
