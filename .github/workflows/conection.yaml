@@ -1,19 +1,26 @@
-name: Secure SSH Connection
-
+name: SSDNodes Connectivity Test
 on:
-  workflow_dispatch:  # Manually trigger this workflow
+  workflow_dispatch:  # Run manually from Actions tab
 
 jobs:
-  ssh_connect:
+  test-connectivity:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup SSH Key
+      - name: Create SSH key file
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "echo 'SSH Connection Successful' && uptime"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/id_rsa
+          chmod 600 /tmp/id_rsa
+      
+      - name: Test connection to SSDNodes server
+        run: |
+          # Test SSH connection
+          ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} '
+            echo "Successfully connected to server!"
+            echo "Server hostname: $(hostname)"
+            echo "Docker status: $(docker info --format "{{.ServerVersion}}" || echo "Docker not available")"
+          '
+      
+      - name: Remove SSH key
+        if: always()
+        run: |
+          rm -f /tmp/id_rsa
