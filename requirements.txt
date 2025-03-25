@@ -9,7 +9,7 @@ libgeos-dev
 libproj-dev
 libcairo2-dev
 libxt-dev
-libmagick++-dev
+libmagickpp-dev
 libharfbuzz-dev
 libfribidi-dev
 libfreetype6-dev
