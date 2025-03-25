@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "locale": "en_US",
+  "platform": "3.6.3",
+  "metadata": {
+    "appmode": "shiny",
+    "primary_rmd": null,
+    "primary_html": null,
+    "content_category": "application",
+    "has_parameters": false
+  },
+  "packages": {
+    "shiny": "1.5.0",
+    "DBI": "1.1.0",
+    "RMariaDB": "1.0.8",
+    "aws.s3": "0.3.21"
+  },
+  "files": {
+    "app.R": {
+      "checksum": ""
+    },
+    "global.R": {
+      "checksum": ""
+    },
+    "ui.R": {
+      "checksum": ""
+    },
+    "server.R": {
+      "checksum": ""
+    }
+  },
+  "users": {
+    "additional_users": []
+  },
+  "runtime": {
+    "image_name": "rstudio/r-base",
+    "image_tag": "3.6.3"
+  }
+}
