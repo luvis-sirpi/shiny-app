@@ -1,26 +1,49 @@
-name: SSDNodes Connectivity Test
+
+name: Build & Trivy Security Scan
+
 on:
-  workflow_dispatch:  # Run manually from Actions tab
+  push:
+    branches: [ main ]
+  pull_request:
 
 jobs:
-  test-connectivity:
+  build-and-scan:
+    name: Build Docker Image and Run Trivy Scans
     runs-on: ubuntu-latest
+
     steps:
-      - name: Create SSH key file
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/id_rsa
-          chmod 600 /tmp/id_rsa
-      
-      - name: Test connection to SSDNodes server
-        run: |
-          # Test SSH connection
-          ssh -o StrictHostKeyChecking=no -i /tmp/id_rsa ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} '
-            echo "Successfully connected to server!"
-            echo "Server hostname: $(hostname)"
-            echo "Docker status: $(docker info --format "{{.ServerVersion}}" || echo "Docker not available")"
-          '
-      
-      - name: Remove SSH key
-        if: always()
-        run: |
-          rm -f /tmp/id_rsa
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t demo-trivy-app .
+
+      - name: Create reports directory
+        run: mkdir -p trivy-reports
+
+      - name: Trivy FS Scan (source code)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: CRITICAL,HIGH
+          output: trivy-reports/fs-report.txt
+
+      - name: Trivy Image Scan (Docker image)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: image
+          scan-ref: demo-trivy-app
+          format: table
+          severity: CRITICAL,HIGH
+          output: trivy-reports/image-report.txt
+
+      - name: Upload Trivy Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-reports
+          path: trivy-reports/
