@@ -30,7 +30,8 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
-          severity: CRITICAL,HIGH
+          scanners: 'secret,config'
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           output: trivy-reports/fs-report.txt
 
       - name: Trivy Image Scan (Docker image)
@@ -39,7 +40,7 @@ jobs:
           scan-type: image
           scan-ref: demo-trivy-app
           format: table
-          severity: CRITICAL,HIGH
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
           output: trivy-reports/image-report.txt
 
       - name: Upload Trivy Reports
